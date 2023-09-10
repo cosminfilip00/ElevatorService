@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator.Console", "Elevator.Console\Elevator.Console.csproj", "{B3E8BC34-FD6A-4817-A9B7-A6BE7260366B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Console", "Elevator.Console\Elevator.Console.csproj", "{B3E8BC34-FD6A-4817-A9B7-A6BE7260366B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator.Application", "Elevator.Application\Elevator.Application.csproj", "{35EA4287-CA9A-4A78-8471-EB74D7486388}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Application", "Elevator.Application\Elevator.Application.csproj", "{35EA4287-CA9A-4A78-8471-EB74D7486388}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator.Domain", "Elevator.Domain\Elevator.Domain.csproj", "{B655AA6F-9157-44D1-8423-49FB573DE856}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Domain", "Elevator.Domain\Elevator.Domain.csproj", "{B655AA6F-9157-44D1-8423-49FB573DE856}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elevator.Infrastructure", "Elevator.Infrastructure\Elevator.Infrastructure.csproj", "{309A6CE6-8CA1-4AB3-B997-1BEE67599971}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elevator.Infrastructure", "Elevator.Infrastructure\Elevator.Infrastructure.csproj", "{309A6CE6-8CA1-4AB3-B997-1BEE67599971}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
