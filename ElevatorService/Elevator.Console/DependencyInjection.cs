@@ -1,4 +1,5 @@
 ﻿using Elevator.Application.Commands.AddElevator;
+using Elevator.Domain;
 using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -7,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddConsoleServices(this IServiceCollection services)
         {
-            //services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+           // services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Program>());
 
             services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetAssembly(typeof(AddElevatorCommand))));
 

@@ -11,31 +11,36 @@ namespace Elevator.Infrastructure
         {
         }
 
-        public Task Add(ElevatorEntity elevator)
+        public async Task Add(ElevatorEntity elevator)
         {
             _elevators.Add(elevator);
             
-            return Task.CompletedTask;
+            //This delay simulate a database trip
+            await Task.Delay(500);
         }
 
-        public Task<List<ElevatorEntity>> GetAll()
+        public async Task<List<ElevatorEntity>> GetAll()
         {
-            return Task.FromResult(_elevators);
+            await Task.Delay(200);
+            
+            return _elevators;
         }
 
-        public ElevatorEntity GetElevatorById(Guid id)
+        public async Task<ElevatorEntity> GetElevatorById(Guid id)
         {
             var existingElevator = _elevators.FirstOrDefault(e => e.Id == id);
 
-            if (existingElevator == null) 
+            if (existingElevator is null) 
             {
                 throw new InvalidOperationException();
             }
 
+            await Task.Delay(500);
+
             return existingElevator;
         }
 
-        public void Remove(Guid id)
+        public async Task Remove(Guid id)
         {
             foreach (var elevator in _elevators)
             {
@@ -44,14 +49,21 @@ namespace Elevator.Infrastructure
                     _elevators.Remove(elevator);
                 }
             }
+
+            await Task.Delay(500);
         }
 
-        public void Update(ElevatorEntity elevator)
+        public async Task Update(ElevatorEntity elevator)
         {
-            var existingElevator = GetElevatorById(elevator.Id);
+            var existingElevator = await GetElevatorById(elevator.Id);
          
             existingElevator.Name = elevator.Name;
             existingElevator.Capacity = elevator.Capacity;
+            existingElevator.CurrentPassengerCount = elevator.CurrentPassengerCount;
+            existingElevator.CurrentFloor = elevator.CurrentFloor;
+            existingElevator.IsAvailable = elevator.IsAvailable;
+
+            await Task.Delay(500);
         }
     }
 }

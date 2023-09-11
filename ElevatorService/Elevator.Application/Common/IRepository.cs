@@ -6,12 +6,12 @@ namespace Elevator.Application.Common
     {
         Task<List<ElevatorEntity>> GetAll();
 
-        ElevatorEntity GetElevatorById(Guid id);
+        Task<ElevatorEntity> GetElevatorById(Guid id);
         
         Task Add(ElevatorEntity elevator);
         
-        void Remove(Guid id);
+        Task Remove(Guid id);
 
-        void Update(ElevatorEntity elevator);
+        Task Update(ElevatorEntity elevator);
     }
 }

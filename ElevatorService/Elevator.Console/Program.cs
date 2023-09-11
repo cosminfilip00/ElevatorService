@@ -1,7 +1,9 @@
 ﻿using Elevator.Application.Commands.AddElevator;
 using Elevator.Application.Commands.GetElevators;
 using Elevator.Application.Commands.RequestElevator;
+using Elevator.Application.Commands.SelectElevator;
 using Elevator.Application.Common;
+using Elevator.Domain;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,20 +19,28 @@ public class Program
 
         var isRunning = true;
 
+        Console.WriteLine("Please select a command:");
+
         while (isRunning)
         {
-            Console.WriteLine("Please select a command:");
             var command = Console.ReadLine();
 
             //TODO: handle this validation later with an custom exception handler 
+            if(string.IsNullOrEmpty(command)) 
+            {
+                Console.WriteLine("Please select a command:");
+                return;
+            }
+
             if (command.Equals(Constants.EXIT_COMMAND))
             {
                 isRunning = false;
                 Console.WriteLine("You exit the app succesfully.");
             }
-            else
+            
+            if (int.TryParse(command, out int option))
             {
-                switch (int.Parse(command))
+                switch (option)
                 {
                     case 1:
                         AddElevator();
@@ -48,24 +58,52 @@ public class Program
         }
     }
 
-    private static void CallElevator()
+    private async static void CallElevator()
     {
         //TODO: Add validations using FluentValidation
-        Console.WriteLine("Insert floor:");
-        var floorNumber = int.Parse(Console.ReadLine());
+        Console.WriteLine("Insert floor(1-100):");
 
-        Console.WriteLine("Insert passenger number:");
-        var passengerNumber = int.Parse(Console.ReadLine());
-
-        var command = new RequestElevatorCommand
+        if (!int.TryParse(Console.ReadLine(), out int floorNumber) || floorNumber < 1 || floorNumber > 100)
         {
-            FloorNumber = floorNumber,
-            PassengerNumber = passengerNumber
+            Console.WriteLine("Invalid floor. Please select a command:");
+            return;
+        }
+
+        Console.WriteLine("Insert passenger number(1-20):");
+        if (!int.TryParse(Console.ReadLine(), out int passengerCount) || passengerCount < 1 || floorNumber > 20)
+        {
+            Console.WriteLine("Invalid passenger number. Please select a command:");
+            return;
+        }
+
+        var selectElevatorCommand = new SelectElevatorCommand
+        {
+            RequestedFloor = floorNumber,
+            PassengersCount = passengerCount
         };
 
-        var requestedElevator = _mediator.Send(command).Result;
+        var selectedElevator = await _mediator.Send(selectElevatorCommand);
 
-        Console.WriteLine($"Elevator {requestedElevator.Name} : {requestedElevator.Id} with capacity of {requestedElevator.Capacity} was requested.");
+        if (selectedElevator is null)
+        {
+            Console.WriteLine("No elevator matching the requested capacity. Please add a new elevator.");
+            return;
+        }
+
+        Console.WriteLine($"Elevator {selectedElevator.Name} is moving from floor {selectedElevator.CurrentFloor} to floor {selectElevatorCommand.RequestedFloor}");
+
+        var command = new MoveElevatorCommand
+        {
+            ElevatorId = selectedElevator.Id,
+            RequestedFloor = floorNumber,
+            PassengersCount = passengerCount
+        };
+
+        var requestedElevator = await _mediator.Send(command);
+
+        Console.WriteLine($"Elevator {requestedElevator.Name} arrived at floor {requestedElevator.CurrentFloor.DisplayOrdinal()} with {requestedElevator.CurrentPassengerCount} passengers.");
+
+        Console.WriteLine("Please select a command:");
     }
 
     private static void AddElevator()
@@ -73,6 +111,7 @@ public class Program
         var command = new AddElevatorCommand();
 
         Console.WriteLine("Insert elevator name:");
+        
         var name = Console.ReadLine();
 
         if (string.IsNullOrEmpty(name))
@@ -93,22 +132,46 @@ public class Program
 
         command.Capacity = capacity;
 
-        _mediator.Send(command);
+        _mediator?.Send(command);
 
         Console.WriteLine($"Elevator {command.Name} was created.");
+
+        Console.WriteLine("Please select a command:");
     }
 
-    private static void GetAllElevators()
+    private async static void GetAllElevators()
     {
         var command = new GetElevatorsCommand();
 
-        var existingElevators = _mediator.Send(command).Result;
+        var existingElevators = await _mediator.Send(command);
 
         Console.WriteLine($"Currently, there are {existingElevators.Count} in use.");
+
         foreach (var elevator in existingElevators)
         {
-            Console.WriteLine($"{elevator.Name} : {elevator.Id} : {elevator.Capacity}");
+            Console.WriteLine($"Elevator {elevator.Name} " +
+                $"with capacity of {elevator.Capacity} " +
+                $"at {elevator.CurrentFloor.DisplayOrdinal()} " +
+                $"floor with {elevator.CurrentPassengerCount} passengers.");
         }
+
+        Console.WriteLine("Please select a command:");
+    }
+
+    private async static void MoveElevator(Guid elevatorId, int floorNumber, int passengerCount)
+    {
+        var command1 = new MoveElevatorCommand
+        {
+            ElevatorId = elevatorId,
+            RequestedFloor = floorNumber,
+            PassengersCount = passengerCount
+        };
+
+        var requestedElevator = await _mediator.Send(command1);
+
+        Console.WriteLine($"Elevator {requestedElevator.Name} arrived at floor {requestedElevator.CurrentFloor.DisplayOrdinal()} with {requestedElevator.CurrentPassengerCount} passengers.");
+
+        Console.WriteLine("Please select a command:");
     }
 
     public static void CreateConfig()
