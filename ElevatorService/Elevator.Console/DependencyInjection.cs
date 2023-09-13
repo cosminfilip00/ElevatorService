@@ -1,5 +1,4 @@
 ﻿using Elevator.Application.Commands.AddElevator;
-using Elevator.Domain;
 using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection

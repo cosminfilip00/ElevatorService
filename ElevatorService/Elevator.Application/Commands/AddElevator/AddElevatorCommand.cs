@@ -1,38 +1,36 @@
 ﻿using Elevator.Application.Common;
 using Elevator.Domain;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
-namespace Elevator.Application.Commands.AddElevator
+namespace Elevator.Application.Commands.AddElevator;
+
+public class AddElevatorCommand : IRequest<string>
 {
-    public class AddElevatorCommand : IRequest<Guid>
+    public string Name { get; set; }
+    public int Capacity { get; set; }
+}
+
+public class AddElevatorCommandHandler : IRequestHandler<AddElevatorCommand, string>
+{
+    private readonly IRepository _repository;
+
+    public AddElevatorCommandHandler(IRepository repository)
     {
-        public string Name { get; set; }
-        public int Capacity { get; set; }
+        _repository = repository;
+
     }
-
-    public class AddElevatorCommandHandler : IRequestHandler<AddElevatorCommand, Guid>
+    public async Task<string> Handle(AddElevatorCommand command, CancellationToken cancellationToken)
     {
-        private readonly IRepository _repository;
-
-        public AddElevatorCommandHandler(IRepository repository)
+        //TODO: improve this with AutoMapper
+        var elevatorEntity = new ElevatorEntity
         {
-            _repository = repository;
+            Id = Guid.NewGuid(),
+            Name = command.Name,
+            Capacity = command.Capacity
+        };
 
-        }
-        public async Task<Guid> Handle(AddElevatorCommand command, CancellationToken cancellationToken)
-        {
-            //TODO: improve this with AutoMapper
-            var elevatorEntity = new ElevatorEntity
-            {
-                Id = Guid.NewGuid(),
-                Name = command.Name,
-                Capacity = command.Capacity
-            };
+        await _repository.Add(elevatorEntity);
 
-            await _repository.Add(elevatorEntity);
-
-            return elevatorEntity.Id;
-        }
+        return elevatorEntity.Name;
     }
 }
