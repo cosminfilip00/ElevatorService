@@ -1,7 +1,7 @@
 ﻿using Elevator.Application.Common;
 using Elevator.Domain;
 
-namespace Elevator.Application.Commands.RequestElevator;
+namespace Elevator.Application.Commands.MoveElevator;
 
 public class MoveElevatorResponse : BaseResponse
 {

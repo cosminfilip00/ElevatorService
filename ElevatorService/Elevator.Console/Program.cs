@@ -1,6 +1,6 @@
 ﻿using Elevator.Application.Commands.AddElevator;
 using Elevator.Application.Commands.GetElevators;
-using Elevator.Application.Commands.RequestElevator;
+using Elevator.Application.Commands.MoveElevator;
 using Elevator.Application.Commands.SelectElevator;
 using Elevator.Application.Common;
 using Elevator.Domain;
@@ -76,21 +76,22 @@ public class Program
             return;
         }
 
-        var selectElevatorCommand = new SelectElevatorCommand
+        var selectBestElevatorCommand = new SelectBestElevatorCommand
         {
             RequestedFloor = floorNumber,
             PassengersCount = passengerCount
         };
 
-        var selectedElevator = await _mediator.Send(selectElevatorCommand);
+        var selectedElevator = await _mediator.Send(selectBestElevatorCommand);
 
         if (selectedElevator is null)
         {
             Console.WriteLine("No elevator matching the requested capacity. Please add a new elevator.");
+            Console.WriteLine("Please select a command:");
             return;
         }
 
-        Console.WriteLine($"Elevator {selectedElevator.Name} is moving from floor {selectedElevator.CurrentFloor} to floor {selectElevatorCommand.RequestedFloor}");
+        Console.WriteLine($"Elevator {selectedElevator.Name} is moving from floor {selectedElevator.CurrentFloor} to floor {selectBestElevatorCommand.RequestedFloor}");
 
         var command = new MoveElevatorCommand
         {
