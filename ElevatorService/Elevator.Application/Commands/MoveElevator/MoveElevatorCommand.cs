@@ -2,7 +2,7 @@
 using Elevator.Domain;
 using MediatR;
 
-namespace Elevator.Application.Commands.RequestElevator
+namespace Elevator.Application.Commands.MoveElevator
 {
     public class MoveElevatorCommand : IRequest<ElevatorEntity>
     {
